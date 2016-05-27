@@ -3,7 +3,7 @@ class ClientProcess
     @socket = socket
   end
 
-  def cycle
+  def start
 
   end
 

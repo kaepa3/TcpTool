@@ -1,0 +1,5 @@
+index : 2
+dispatch :
+  - code : 5
+    path : spec/test_text.txt
+    process : read_text

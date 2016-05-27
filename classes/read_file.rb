@@ -12,6 +12,10 @@ class ReadFile
     common_call('get_csv', file_path)
   end
 
+  def method_missing
+    false
+  end
+
   private
 
   def common_call(method_name, file_path)
