@@ -12,7 +12,8 @@ class ReadFile
     common_call('get_csv', file_path)
   end
 
-  def method_missing
+  def method_missing(call_name, *args)
+    puts "method call:#{call_name} args:#{args}"
     false
   end
 

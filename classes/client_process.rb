@@ -1,37 +1,66 @@
-require 'json'   
-    
+require 'json'
+require_relative 'file_dispatcher'
+
 class ClientProcess
   def initialize(socket, file_path)
     @socket = socket
     @file_reader = FileDispatcher.new(file_path)
     @sendque = Queue.new
+    @flg = true
   end
 
   def start
-    Thread.new do 
+    Thread.new do
       begin
         process
-      rescue => exception
-        puts "ソケット終了:" + exception.message
+      rescue => e
+        @flg = false
+        puts "ソケット終了:" + e.message
       end
     end
   end
-  
+
   def process
     Thread.new { console_process }
-    loop do
-      rev,buff = @socket.recvfrom(100)
-      val = @file_reader.dispatch(rev)
+    Thread.new { send_process }
+    Thread.new { revieve_process }
+  end
+
+  def revieve_process
+    while @flg
+      ret = IO.select([@socket], nil, nil, 1)
+      next if ret.nil?
+      ret[0].each do |obj|
+        rev = obj.recv(6000)
+        next if rev.empty?
+        bin = rev.unpack('C*')
+        puts bin.map { |b| "0x%02X" % b }.join(' ')
+        val = @file_reader.dispatch(bin)
+        next if val == false
+        @sendque.push val
+        puts 'add que!!!'
+      end
     end
   end
-  
+
   def console_process
-   loop do
-     cmd = gets.chomp
-     exit if(cmd == e)
-     val = @file_reader.dispatch(cmd)
-     next if val == false
-     @sendque.enq val
-   end
+    while @flg
+      cmd = gets.chomp
+      exit if cmd == 'e'
+      val = @file_reader.dispatch(cmd)
+      next if val == false
+      @sendque.push val
+    end
+  end
+
+  def send_process
+    while @flg
+      if @sendque.length <= 0
+        req = @sendque.pop
+        next if req.empty?
+        puts 'you writed:' + req.map { |b| format('0x%02X', b) }.join(' ')
+        @socket.write(req)
+      end
+    end
   end
 end
