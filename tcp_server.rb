@@ -1,10 +1,10 @@
+require "socket"
 
-tcp_server = TcpServer.new
-
-tcp_server.start(60_000)
+server = TCPServer.open(60_000)
 
 loop do
   client = server.accept
+  puts "hai"
   Thread.new(client) do |cl|
     begin
       client_obj = ClientProcess.new(cl)
