@@ -1,6 +1,7 @@
 require 'json'
 require_relative 'file_dispatcher'
 
+# client spcket class
 class ClientProcess
   def initialize(socket, file_path)
     @socket = socket
@@ -10,20 +11,16 @@ class ClientProcess
   end
 
   def start
-    Thread.new do
-      begin
-        process
-      rescue => e
-        @flg = false
-        puts "ソケット終了:" + e.message
-      end
-    end
+    Thread.new { exeption_proc(method(:console_process)) }
+    Thread.new { exeption_proc(method(:send_process)) }
+    exeption_proc(method(:revieve_process))
   end
 
-  def process
-    Thread.new { console_process }
-    Thread.new { send_process }
-    Thread.new { revieve_process }
+  def exeption_proc(process)
+    process.call
+  rescue => e
+    puts "error ->#{e.message}"
+    @flg = false
   end
 
   def revieve_process
@@ -34,19 +31,17 @@ class ClientProcess
         rev = obj.recv(6000)
         next if rev.empty?
         bin = rev.unpack('C*')
-        puts bin.map { |b| "0x%02X" % b }.join(' ')
+        puts bin.map { |b| format('0x%02X', b) }.join(' ')
         val = @file_reader.dispatch(bin)
-        next if val == false
-        @sendque.push val
-        puts 'add que!!!'
+        @sendque.push val unless val == false
       end
     end
   end
 
   def console_process
     while @flg
-      cmd = gets.chomp
-      exit if cmd == 'e'
+      cmd = STDIN.gets.chomp
+      raise if cmd == 'e'
       val = @file_reader.dispatch(cmd)
       next if val == false
       @sendque.push val
@@ -55,12 +50,11 @@ class ClientProcess
 
   def send_process
     while @flg
-      if @sendque.length <= 0
-        req = @sendque.pop
-        next if req.empty?
-        puts 'you writed:' + req.map { |b| format('0x%02X', b) }.join(' ')
-        @socket.write(req)
-      end
+      next if @sendque.length <= 0
+      req = @sendque.pop
+      next if req.empty?
+      puts 'you writed:' + req.map { |b| format('0x%02X', b) }.join(' ')
+      @socket.write(req)
     end
   end
 end

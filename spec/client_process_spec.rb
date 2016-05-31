@@ -1,7 +1,10 @@
 require 'spec_helper'
 require 'yaml'
-require_relative '../classes/client_process'
 require 'socket'
+require_relative '../classes/client_process'
+require_relative '../classes/log_module'
+
+Log.info('korena')
 
 TEST_PORT = 62_000
 
@@ -11,7 +14,6 @@ describe 'is Ok?' do
     Thread.new do
       begin
         client = server.accept
-        puts Dir.pwd
         process = ClientProcess.new(client, 'spec/test_dispatcher.yml')
         process.start
       rescue => e

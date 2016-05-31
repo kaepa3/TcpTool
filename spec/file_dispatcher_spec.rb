@@ -4,7 +4,6 @@ require_relative '../classes/file_dispatcher'
 
 describe 'is Ok?' do
   it 'file dispatch' do
-    puts Dir.pwd
     disp = FileDispatcher.new('spec/test_dispatcher.yml')
     binalys = [0, 3, 5, 3]
     data = disp.dispatch(binalys)
