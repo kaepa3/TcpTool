@@ -1,0 +1,8 @@
+file_loder_path : spec/test_dispatcher.yml
+cycle_files :
+  - path : spec/test_text.txt
+    process : read_text
+    time : 3
+  - path : spec/test_text.txt
+    process : read_text
+    time : 2

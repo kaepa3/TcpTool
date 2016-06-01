@@ -4,7 +4,9 @@ require_relative 'file_dispatcher'
 class ClientProcess
   def initialize(socket, file_path)
     @socket = socket
-    @file_reader = FileDispatcher.new(file_path)
+    puts "#{self.class.name} load file #{file_path}"
+    @yml_data = YAML.load_file(file_path)
+    @file_reader = FileDispatcher.new(@yml_data["file_loder_path"])
     @sendque = Queue.new
     @flg = true
   end

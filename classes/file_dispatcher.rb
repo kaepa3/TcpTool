@@ -1,7 +1,9 @@
 require 'json'
 require_relative 'read_file'
+
 class FileDispatcher
   def initialize(file_path)
+    puts "#{self.class.name} load file #{file_path}"
     @yml_data = YAML.load_file(file_path)
   end
 

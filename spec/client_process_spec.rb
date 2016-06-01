@@ -7,12 +7,11 @@ TEST_PORT = 62_000
 
 describe 'is Ok?' do
   it 'open and read' do
-    server = TCPServer.open(TEST_PORT)
+    server = TCPServer.open('127.0.0.1', TEST_PORT)
     Thread.new do
       begin
         client = server.accept
-        puts Dir.pwd
-        process = ClientProcess.new(client, 'spec/test_dispatcher.yml')
+        process = ClientProcess.new(client, 'spec/client_process.yml')
         process.start
       rescue => e
         puts e.message
