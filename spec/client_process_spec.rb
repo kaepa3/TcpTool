@@ -1,7 +1,10 @@
 require 'spec_helper'
 require 'yaml'
-require_relative '../classes/client_process'
 require 'socket'
+require_relative '../classes/client_process'
+require_relative '../classes/log_module'
+
+Log.info('korena')
 
 TEST_PORT = 62_000
 
