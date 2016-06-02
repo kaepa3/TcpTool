@@ -1,5 +1,6 @@
 require 'json'
 require_relative 'file_dispatcher'
+require_relative 'log_module'
 
 # client spcket class
 class ClientProcess
@@ -8,7 +9,7 @@ class ClientProcess
     @socket = socket
     @sendque = Queue.new
     @flg = true
-    puts "#{self.class.name} load file #{file_path}"
+    Log.info "#{self.class.name} load file #{file_path}"
     @yml_data = YAML.load_file(file_path)
     @counter = Array.new(@yml_data['cycle_files'].length, 0)
     @file_reader = FileDispatcher.new(@yml_data['file_loder_path'])
@@ -24,7 +25,7 @@ class ClientProcess
   def exeption_proc(process)
     while @flg do process.call end
   rescue => e
-    puts "error ->#{e.message}"
+    Log.info "error ->#{e.message}"
     @flg = false
   end
 
@@ -46,7 +47,7 @@ class ClientProcess
     @yml_data['cycle_files'].each_with_index do |rec, idx|
       if @counter[idx] >= rec['time']
         val = @file_reader.read(rec['path'], rec['process'])
-        return if val == false
+        break if val == false
         @sendque.push val
       end
       @counter[idx] += 1

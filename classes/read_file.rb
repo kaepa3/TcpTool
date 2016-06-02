@@ -1,3 +1,5 @@
+require_relative 'log_module'
+
 # reading file
 class ReadFile
   # Read text file
@@ -13,7 +15,7 @@ class ReadFile
   end
 
   def method_missing(call_name, *args)
-    puts "method call:#{call_name} args:#{args}"
+    Log.info "method call:#{call_name} args:#{args}"
     false
   end
 

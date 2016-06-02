@@ -1,13 +1,14 @@
 require 'json'
 require_relative 'read_file'
+require_relative 'log_module'
 
 class FileDispatcher
   def initialize(file_path)
-    puts "#{self.class.name} load file #{file_path}"
+    Log.info "#{self.class.name} load file #{file_path}"
     begin
       @yml_data = YAML.load_file(file_path)
     rescue => e
-      puts e.message + self.class.name
+      Log.info e.message + self.class.name
     end
   end
 
@@ -18,13 +19,13 @@ class FileDispatcher
     return false if records.empty? || !File.exist?(records.first['path'])
     rec = records.first
     obj = ReadFile.new
-    puts "call #{rec['process']}:#{rec['path']} "
+    Log.info "call #{rec['process']}:#{rec['path']} "
     obj.send(rec['process'], rec['path'])
   end
 
   def read(path, process)
     obj = ReadFile.new
-    puts "call #{process}:#{path} "
+    Log.info "call #{process}:#{path} "
     obj.send(process, path)
   end
 end
