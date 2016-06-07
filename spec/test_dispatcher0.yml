@@ -1,7 +1,7 @@
 index : 2
-len : 1
+len : 2
 size : 1
 dispatch :
-  - code : 5
+  - code : 1283
     path : spec/test_text.txt
     process : read_text
