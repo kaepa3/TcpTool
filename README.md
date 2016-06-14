@@ -13,7 +13,7 @@ $ ruby tcp_server.rb [ip] [port] [config yaml]
 $ ruby tcp_client.rb [ip] [port] [config yaml]
 ```
 
-## config yaml
+## config yml
 setting this
 ```yml
 file_loder_path : spec/test_dispatcher.yml #dispatch yaml path
@@ -27,7 +27,7 @@ cycle_files : # cycle setting
 ```
 
 
-## dispatch yaml
+## dispatch yml
 
 ```yml
 index : 2 #judge byte index
