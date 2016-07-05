@@ -10,6 +10,7 @@ module LogHelper
   end
 
   def self.correct_filepos(text)
+    return text if text.rindex('/').nil?
     find_idx = text.rindex('/') + 1
     text[find_idx, text.length - find_idx - 3]
   end

@@ -1,9 +1,12 @@
 require 'json'
+require 'yaml'
+
 require_relative 'file_dispatcher'
 require_relative 'log_module'
 
 # client spcket class
 class ClientProcess
+  attr_reader :flg
   def initialize(socket, file_path)
     file_path ||= ''
     @socket = socket
